@@ -24,7 +24,7 @@ module.exports = (io) => {
       Photo.find({}).then((photos) => {
         const ids = photos.map((photo) => photo.faceId);
       });
-      thing.identify(faceId, ids, (err, statusCode, body) => {
+      api.identify(faceId, ids, (err, statusCode, body) => {
         if (err || statusCode !== 200) {
           res.status(400).send({ 'identity error': err, body });
         } else {
