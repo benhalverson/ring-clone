@@ -1,14 +1,11 @@
 const express = require('express');
 
 const router = express.Router();
-const multer = require('multer');
 const api = require('./api');
 const Photo = require('../models/photo');
 
-const upload = multer({ storage: multer.memoryStorage() });
-
 module.exports = (io) => {
-  router.post('/', (req, res, next) => {
+  router.post('/', (req, res) => {
     const photo = new Photo();
 
     photo.image = 'data:image/png;base64';
@@ -30,7 +27,7 @@ module.exports = (io) => {
         } else {
           const matchIds = body.map((match) => match.faceId);
 
-          Photo.find({ faceId: { $in: matchIds } }, (err, matches) => {
+          Photo.find({ faceId: { $in: matchIds } }, (matches) => {
             if (err || !matches) return res.send('No matches');
             const names = matches.filter((match) => match.name);
             if (names[0]) {
@@ -45,6 +42,7 @@ module.exports = (io) => {
             } else {
               res.send({ name: 'unknown' });
             }
+            return res.json({ matches });
           });
         }
       });
